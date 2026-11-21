@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Давление под контролем</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800&family=Golos+Text:wght@400;500;600;700&display=swap">
+<style>
+/* Двусторонняя листовка А4: лицевая — «что такое давление и чем опасно», оборот — «что делать». Шкала тонометра — главный образ. */
+:root{
+  --ink:#14233b;      /* тёмно-синий текст */
+  --paper:#ffffff;
+  --mist:#eef3f8;     /* светлые плашки */
+  --line:#d3dde8;
+  --red:#d4343b;      /* «высокое давление» */
+  --amber:#e79a1e;
+  --green:#2f9a6b;
+  --blue:#2463a8;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Golos Text","Segoe UI",Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:#c9d3de;color:var(--ink);font-family:var(--body)}
+@page{size:A4;margin:0}
+.sheet{width:210mm;height:297mm;margin:10mm auto;background:var(--paper);overflow:hidden;position:relative;display:flex;flex-direction:column;box-shadow:0 4px 24px rgba(20,35,59,.18)}
+@media print{html,body{background:#fff}.sheet{margin:0;box-shadow:none;page-break-after:always}}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+p{margin:0}
+.pad{padding:0 12mm}
+
+/* ---------- Лицевая сторона ---------- */
+.hero{background:var(--ink);color:#fff;padding:11mm 12mm 9mm;position:relative}
+.eyebrow{font-size:8.5pt;letter-spacing:.14em;text-transform:uppercase;opacity:.75;font-weight:600}
+.hero h1{font-size:30pt;line-height:1.02;font-weight:800;margin-top:3mm}
+.hero h1 span{color:#ff6b70}
+.hero .lead{font-size:11pt;line-height:1.45;margin-top:4mm;max-width:118mm;opacity:.92}
+.reading{position:absolute;right:12mm;top:11mm;width:52mm;border:1.2mm solid #fff;border-radius:6mm;padding:3.5mm 4mm;text-align:right;font-family:var(--display);background:#0d1829}
+.reading .sys{font-size:30pt;font-weight:700;line-height:1}
+.reading .dia{font-size:22pt;font-weight:500;line-height:1.05;border-top:.5mm solid rgba(255,255,255,.35);margin-top:1.5mm;padding-top:1.5mm}
+.reading small{display:block;font-family:var(--body);font-size:7.5pt;opacity:.7;margin-top:1.5mm;letter-spacing:.04em}
+
+.section{padding-top:6mm}
+.h2{font-size:13pt;font-weight:700;display:flex;align-items:baseline;gap:3mm}
+.h2 em{font-style:normal;font-family:var(--body);font-weight:500;font-size:9pt;color:#5a6b82}
+
+/* шкала */
+.scale{display:grid;grid-template-columns:repeat(5,1fr);margin-top:3mm;border-radius:3mm;overflow:hidden}
+.zone{padding:2.6mm 2.4mm;color:#fff;min-height:21mm;display:flex;flex-direction:column;gap:1mm}
+.zone b{font-family:var(--display);font-size:11pt;font-weight:700;font-variant-numeric:tabular-nums}
+.zone span{font-size:8pt;line-height:1.25;font-weight:500}
+.z1{background:#2f9a6b}.z2{background:#62ad4f}.z3{background:#e7b21e;color:var(--ink)}.z4{background:#e3742a}.z5{background:#c8262e}
+.scale-note{font-size:8.3pt;color:#5a6b82;margin-top:2mm;line-height:1.4}
+
+/* органы-мишени */
+.targets{display:grid;grid-template-columns:repeat(5,1fr);gap:2.5mm;margin-top:3mm}
+.target{background:var(--mist);border-radius:3mm;padding:3mm;display:flex;flex-direction:column;gap:1.2mm}
+.target svg{width:9mm;height:9mm}
+.target b{font-size:9.5pt}
+.target span{font-size:8.2pt;line-height:1.3;color:#3a4a60}
+
+.two{display:grid;grid-template-columns:1fr 1fr;gap:6mm;margin-top:3mm}
+ul.list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:1.6mm}
+ul.list li{font-size:9.3pt;line-height:1.35;padding-left:4.5mm;position:relative}
+ul.list li::before{content:"";position:absolute;left:0;top:1.6mm;width:2mm;height:2mm;border-radius:50%;background:var(--red)}
+ul.list.blue li::before{background:var(--blue)}
+.callout{margin-top:3mm;border-left:1.4mm solid var(--red);background:#fdeeee;padding:2.6mm 3.5mm;font-size:9.3pt;line-height:1.4;border-radius:0 2mm 2mm 0}
+.callout b{color:var(--red)}
+
+.footer{margin-top:auto;background:var(--mist);padding:4mm 12mm;display:flex;justify-content:space-between;align-items:center;gap:6mm;font-size:8.5pt;line-height:1.35}
+.footer b{font-size:9.3pt}
+.footer .contacts{text-align:right;font-weight:600}
+.turn{font-family:var(--display);font-size:8pt;font-weight:500;color:var(--blue);letter-spacing:.04em}
+
+/* ---------- Оборот ---------- */
+.band{background:var(--blue);color:#fff;padding:5.5mm 12mm 4.5mm}
+.band h2{font-size:17pt;font-weight:800;line-height:1.1}
+.band p{font-size:10pt;opacity:.92;margin-top:2mm}
+.rules{display:grid;grid-template-columns:repeat(3,1fr);gap:2mm;margin-top:3.5mm}
+.rule{border:.35mm solid var(--line);border-radius:3mm;padding:2.4mm 2.8mm;display:flex;flex-direction:column;gap:1mm}
+.rule .num{font-family:var(--display);font-size:15pt;font-weight:700;color:var(--blue);line-height:1;font-variant-numeric:tabular-nums}
+.rule .num small{font-size:8pt;font-weight:500;font-family:var(--body);color:#5a6b82;margin-left:1mm}
+.rule b{font-size:9.6pt}
+.rule span{font-size:8pt;line-height:1.28;color:#3a4a60}
+
+.steps{counter-reset:s;display:grid;grid-template-columns:repeat(3,1fr);gap:2mm 4mm;margin-top:3mm;padding:0;list-style:none}
+.steps li{counter-increment:s;font-size:8.8pt;line-height:1.33;display:flex;gap:2mm;align-items:flex-start}
+.steps li::before{content:counter(s);flex:0 0 5.5mm;height:5.5mm;border-radius:50%;background:var(--ink);color:#fff;font-family:var(--display);font-size:7.5pt;display:flex;align-items:center;justify-content:center;margin-top:-.3mm}
+
+.meds{background:var(--mist);border-radius:3mm;padding:3.5mm 4mm}
+.meds h3,.crisis h3{font-size:10.5pt;font-weight:700;margin-bottom:2mm}
+.side{display:grid;grid-template-columns:1fr 1fr;gap:1.2mm 3mm;margin-top:2mm;font-size:8.3pt;line-height:1.3}
+.side div{background:#fff;border-radius:1.5mm;padding:1.6mm 2.2mm}
+.meds .note{font-size:8.5pt;margin-top:2mm;line-height:1.35}
+
+.crisis{border:.6mm solid var(--red);border-radius:3mm;padding:3.5mm 4mm}
+.crisis h3{color:var(--red)}
+.call{display:flex;align-items:center;gap:3mm;background:var(--red);color:#fff;border-radius:2.5mm;padding:2.5mm 3.5mm;margin-top:2.5mm}
+.call b{font-family:var(--display);font-size:22pt;font-weight:800;line-height:1}
+.call span{font-size:8.5pt;line-height:1.3}
+
+.udar{display:grid;grid-template-columns:repeat(4,1fr);gap:2mm;margin-top:2.5mm}
+.udar div{background:var(--ink);color:#fff;border-radius:2.5mm;padding:2.2mm 2.5mm;font-size:8.2pt;line-height:1.3}
+.udar b{font-family:var(--display);font-size:17pt;display:block;line-height:1;color:#ff8a8e;margin-bottom:1mm}
+
+.back .section{padding-top:3.8mm}
+.slogan{font-family:var(--display);font-weight:800;font-size:10.5pt;color:var(--ink);line-height:1.6}
+.slogan span{color:var(--red)}
+</style>
+</head>
+<body>
+
+<!-- ===================== ЛИЦЕВАЯ СТОРОНА ===================== -->
+<section class="sheet">
+  <header class="hero">
+    <div class="eyebrow">Памятка для населения</div>
+    <h1>Артериальное<br>давление —<br><span>под контроль!</span></h1>
+    <p class="lead">Гипертонию называют «тихим убийцей». Она годами может ничем себя не выдавать, пока не случится инсульт или инфаркт. Почти половина людей с повышенным давлением не знают об этом.</p>
+    <div class="reading" aria-label="Оптимальное давление 120 на 80">
+      <div class="sys">120</div>
+      <div class="dia">80</div>
+      <small>мм рт. ст. · норма</small>
+    </div>
+  </header>
+
+  <div class="pad">
+    <div class="section">
+      <h2 class="h2">Знаете свои цифры? <em>Классификация для взрослых, мм рт. ст.</em></h2>
+      <div class="scale">
+        <div class="zone z1"><b>&lt;120/80</b><span>Оптимальное</span></div>
+        <div class="zone z2"><b>120–129<br>/80–84</b><span>Нормальное</span></div>
+        <div class="zone z3"><b>130–139<br>/85–89</b><span>Высокое нормальное, стоит насторожиться</span></div>
+        <div class="zone z4"><b>≥140/90</b><span>Артериальная гипертензия, нужен врач</span></div>
+        <div class="zone z5"><b>≥180/110</b><span>Опасно! Риск гипертонического криза</span></div>
+      </div>
+      <p class="scale-note">Верхняя цифра (систолическое давление) показывает давление в момент сокращения сердца, нижняя (диастолическое) — в момент его расслабления. Диагноз ставит врач по результатам нескольких измерений.</p>
+    </div>
+
+    <div class="section">
+      <h2 class="h2">Чем опасно высокое давление</h2>
+      <div class="targets">
+        <div class="target">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#d4343b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4a3 3 0 0 0-3 3 3 3 0 0 0-2 5 3 3 0 0 0 3 5 3 3 0 0 0 5 1V5a3 3 0 0 0-3-1z"/><path d="M15 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-3 5 3 3 0 0 1-5 1"/></svg>
+          <b>Мозг</b><span>Инсульт, ухудшение памяти, сосудистая деменция</span>
+        </div>
+        <div class="target">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#d4343b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/><path d="M8 11h2l1-2 2 4 1-2h2"/></svg>
+          <b>Сердце</b><span>Инфаркт, стенокардия, сердечная недостаточность, аритмии</span>
+        </div>
+        <div class="target">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#d4343b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4c-3 0-4 3-4 7s1 9 4 9 3-3 3-5-1-3-1-5 1-6-2-6z"/><path d="M16 4c3 0 4 3 4 7s-1 9-4 9-3-3-3-5 1-3 1-5-1-6 2-6z"/></svg>
+          <b>Почки</b><span>Хроническая болезнь почек, почечная недостаточность</span>
+        </div>
+        <div class="target">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#d4343b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+          <b>Глаза</b><span>Повреждение сосудов сетчатки, снижение зрения</span>
+        </div>
+        <div class="target">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#d4343b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg>
+          <b>Сосуды</b><span>Атеросклероз, аневризма, поражение артерий ног</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section two">
+      <div>
+        <h2 class="h2">Тревожные сигналы</h2>
+        <ul class="list" style="margin-top:3mm">
+          <li>Головная боль, чаще в затылке, по утрам</li>
+          <li>Головокружение, шум или звон в ушах</li>
+          <li>«Мушки» и пелена перед глазами</li>
+          <li>Сердцебиение, давящая боль в груди</li>
+          <li>Покраснение лица, носовые кровотечения</li>
+          <li>Быстрая утомляемость, плохой сон</li>
+        </ul>
+        <div class="callout"><b>Важно:</b> у многих людей повышенное давление не вызывает никаких ощущений. Узнать о нём можно только с помощью тонометра.</div>
+      </div>
+      <div>
+        <h2 class="h2">Факторы риска</h2>
+        <ul class="list blue" style="margin-top:3mm">
+          <li>Избыток соли в питании</li>
+          <li>Лишний вес, особенно в области живота</li>
+          <li>Курение и употребление алкоголя</li>
+          <li>Малоподвижный образ жизни</li>
+          <li>Хронический стресс, недосыпание</li>
+          <li>Сахарный диабет, повышенный холестерин</li>
+          <li>Возраст: мужчины старше 55 лет, женщины старше 65 лет</li>
+          <li>Гипертония, инфаркт или инсульт у близких родственников</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div><b>ГУ «Копыльский районный центр гигиены и эпидемиологии»</b><br>Измеряйте давление после 40 лет не реже 1 раза в год, при факторах риска — чаще.</div>
+    <div class="contacts">kopylcge.by<br>@kopyl_cge<br><span class="turn">Что делать? → на обороте</span></div>
+  </footer>
+</section>
+
+<!-- ===================== ОБОРОТНАЯ СТОРОНА ===================== -->
+<section class="sheet back">
+  <header class="band">
+    <h2>9 правил, которые держат давление в норме</h2>
+    <p>Здоровый образ жизни снижает давление не хуже таблетки, а на ранней стадии может обойтись без лекарств.</p>
+  </header>
+
+  <div class="pad">
+    <div class="rules">
+      <div class="rule"><div class="num">&lt;5 г<small>соли в день</small></div><b>Меньше соли</b><span>1 чайная ложка без верха, включая соль в хлебе, колбасе, сыре. Не досаливайте.</span></div>
+      <div class="rule"><div class="num">400 г<small>в день</small></div><b>Овощи и фрукты</b><span>Плюс цельные злаки, рыба, бобовые. Меньше жирного и сладкого.</span></div>
+      <div class="rule"><div class="num">150 мин<small>в неделю</small></div><b>Движение</b><span>Быстрая ходьба, плавание, велосипед: по 30 минут 5 раз в неделю.</span></div>
+      <div class="rule"><div class="num">&lt;94 / 80 см<small>талия м / ж</small></div><b>Здоровый вес</b><span>Минус 1 кг веса — примерно минус 1 мм рт. ст. давления.</span></div>
+      <div class="rule"><div class="num">0<small>сигарет</small></div><b>Отказ от курения</b><span>Каждая сигарета сужает сосуды. Отказаться никогда не поздно.</span></div>
+      <div class="rule"><div class="num">Меньше<small>— лучше</small></div><b>Ограничение алкоголя</b><span>Повышает давление и ослабляет действие лекарств.</span></div>
+      <div class="rule"><div class="num">7–8 ч<small>сна</small></div><b>Полноценный сон</b><span>Ложитесь и вставайте в одно и то же время.</span></div>
+      <div class="rule"><div class="num">Покой<small></small></div><b>Управление стрессом</b><span>Прогулки, хобби, дыхательные упражнения.</span></div>
+      <div class="rule"><div class="num">1 раз<small>в год минимум</small></div><b>Контроль и диспансеризация</b><span>Давление, холестерин и сахар крови.</span></div>
+    </div>
+
+    <div class="section">
+      <h2 class="h2">Как правильно измерять давление дома</h2>
+      <ol class="steps">
+        <li>За 30 минут не курите, не пейте кофе и крепкий чай, не занимайтесь спортом</li>
+        <li>Посидите спокойно 5 минут, опираясь на спинку стула, ноги не скрещивайте</li>
+        <li>Манжету наденьте на голую руку на 2 см выше локтевого сгиба, на уровне сердца</li>
+        <li>Во время измерения не разговаривайте и не двигайтесь</li>
+        <li>Сделайте 2 измерения с перерывом 1–2 минуты и запишите среднее</li>
+        <li>Измеряйте утром и вечером, ведите дневник и показывайте его врачу</li>
+      </ol>
+    </div>
+
+    <div class="section two" style="gap:4mm">
+      <div class="meds">
+        <h3>Если врач назначил лечение</h3>
+        <ul class="list blue">
+          <li>Принимайте препараты каждый день, даже когда давление в норме</li>
+          <li>Не отменяйте и не меняйте дозу самостоятельно</li>
+          <li>Не пейте лекарства, «которые помогли соседу»</li>
+        </ul>
+        <p class="note"><b>Возможные побочные действия</b> зависят от препарата: сухой кашель, отёки лодыжек, головокружение при резком вставании, слабость. Заметили такое — <b>не бросайте лечение</b>, а скажите врачу: он подберёт другой препарат.</p>
+      </div>
+
+      <div class="crisis">
+        <h3>Гипертонический криз: первая помощь</h3>
+        <p style="font-size:8.5pt;line-height:1.35">Резкий подъём давления с сильной головной болью, тошнотой, нарушением зрения, болью в груди.</p>
+        <ul class="list" style="margin-top:2mm">
+          <li>Сядьте или прилягте, приподняв голову, откройте окно</li>
+          <li>Измерьте давление, примите препарат, назначенный врачом на такой случай</li>
+          <li>Не снижайте давление резко: не более чем на 20–25% за час</li>
+        </ul>
+        <div class="call"><b>103</b><span>Звоните сразу при боли в груди, нарушении речи, онемении руки или ноги, а также если давление не снижается</span></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="h2">Узнайте инсульт по правилу «УДАР» <em>каждая минута на счету</em></h2>
+      <div class="udar">
+        <div><b>У</b>Улыбка. Попросите улыбнуться: уголок рта опущен с одной стороны?</div>
+        <div><b>Д</b>Движение. Попросите поднять обе руки: одна опускается или не поднимается?</div>
+        <div><b>А</b>Артикуляция. Попросите повторить простую фразу: речь невнятная?</div>
+        <div><b>Р</b>Решение. Хотя бы один признак есть — немедленно вызывайте скорую: 103</div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div><span class="slogan">Знаешь свои цифры — <span>держишь жизнь под контролем!</span></span><br><b>ГУ «Копыльский районный центр гигиены и эпидемиологии»</b></div>
+    <div class="contacts">kopylcge.by<br>@kopyl_cge</div>
+  </footer>
+</section>
+
+</body>
+</html>
